@@ -4,4 +4,3 @@
 [![npm version](https://badge.fury.io/js/comp-check.svg)](https://badge.fury.io/js/comp-check)
 
 A Javascript library to help with null checking in functional composition
-
