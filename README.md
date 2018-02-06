@@ -6,8 +6,8 @@
 A Javascript library to help with null checking in functional composition
 
 ## Example Usage
-Suppose we have the following functions and we want to compose them into
-a pure function that returns user's father's full name given an id.
+Suppose that we have the following functions and we want to compose them into
+a pure function that takes a user's id and returns a user's father's full name.
 ```javascript
 const userFromId = id => usersById[id] ? usersById[id] : null;
 
@@ -21,42 +21,43 @@ const fullName = user => {
   return `${firstName} ${lastName}`;
 };
 ```
-The following won't work, because our function isn't pure:
+The following won't work, because we end up with an impure function:
 ```javascript
-const fathersName = compose(
-  fullName,
+const fathersName = pipe(
+  userFromId,
   father,
-  userFromId
+  fullName
 );
 ```
-It's impure because it throws errors that it doesn't catch,
-when either userFromId or father returns null.
+Our function is impure because it throws errors that it doesn't catch,
+when either `userFromId` or `father` returns null.
 
 To achieve purity we need to handle null values without throwing uncaught
 errors.
 
 In effect, we need the following:
 ```javascript
-const fatherFullName = compose(
-   userFromId,   value => {
-     if (value === null) return null;
-     return fullName(value);
-   },
+const fatherFullName = pipe(
+   userFromId,
    value => {
      if (value === null) return null;
      return father(value);
+   },
+   userFromId,   value => {
+     if (value === null) return null;
+     return fullName(value);
    }
-   userFromId,
 );
 ```
-Achieving purity in this way, leads to some, using a few functions from comp-check,
-we can obtained the same effect without all the full.
+But achieving purity in this way exposes repretitive null checking details.
+Using comp-check's `maybe`, `map`, and `always` functions allows us to
+achieve the same result without all the mess.
 ```javascript
-const fatherFullName = compose(
-  always(identity)
-  map(fullName),
+const fatherFullName = pipe(
+  maybe,
+  map(userFromId),
   map(father),
-  map(userFromId), // calls userFromId on the value if the Maybe isn't null
-  maybe // Wrap incoming value in a Maybe
+  map(fullName),
+  always(identity)
 );
 ```
