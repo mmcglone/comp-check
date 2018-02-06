@@ -6,7 +6,7 @@
 A Javascript library to help with null checking in functional composition
 
 ## Example Usage
-Suppose that we have the following functions and we want to compose them into
+Suppose we have the following functions and we want to compose them into
 a pure function that takes a user's id and returns a user's father's full name.
 ```javascript
 const userFromId = id => usersById[id] ? usersById[id] : null;
@@ -23,6 +23,8 @@ const fullName = user => {
 ```
 The following won't work, because we end up with an impure function:
 ```javascript
+const pipe = require('lodash/fp/pipe');
+
 const fathersName = pipe(
   userFromId,
   father,
@@ -30,9 +32,9 @@ const fathersName = pipe(
 );
 ```
 Our function is impure because it throws errors that it doesn't catch,
-when either `userFromId` or `father` returns null.
+when `userFromId` or `father` return null.
 
-To achieve purity we need to handle null values without throwing uncaught
+To achieve purity we need to handle these null values without uncaught
 errors.
 
 In effect, we need the following:
@@ -49,9 +51,10 @@ const fatherFullName = pipe(
    }
 );
 ```
-But achieving purity in this way exposes repretitive null checking details.
-Using comp-check's `maybe`, `map`, and `always` functions allows us to
-achieve the same result without all the mess.
+But achieving purity in this way exposes repetitive null checking details
+that clutter distract from the main purpose of our function.
+Using comp-check's `maybe`, `map`, and `always` functions, we can
+achieve the same result without all the mess:
 ```javascript
 const fatherFullName = pipe(
   maybe,
