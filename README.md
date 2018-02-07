@@ -91,6 +91,6 @@ const fatherFullName = pipe(
   map(userFromId), // applies userFromId to our argument if not null
   map(father), // applies father to the result if not null
   map(fullName),  // does the same but with fullName
-  always(identity) // returns our final result,  null or not
+  always(identity) // returns our final result, null or not
 );
 ```
