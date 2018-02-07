@@ -68,7 +68,7 @@ const fatherFullName = pipe(
      if (value === null) return null;
      return father(value);
    },
-   userFromId,   value => {
+   value => {
      if (value === null) return null;
      return fullName(value);
    }
