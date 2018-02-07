@@ -43,7 +43,7 @@ The following won't work, because we'd end up with an impure function:
 ```javascript
 const pipe = require('lodash/fp/pipe');
 
-const fathersName = pipe(
+const fatherFullName = pipe(
   userFromId,
   father,
   fullName
@@ -52,16 +52,16 @@ const fathersName = pipe(
 Our function is impure because it throws errors that it doesn't catch,
 when `userFromId` or `father` return null:
 ```javascript
-// When userFromId returns null
+fatherFullName(123); // Fred Smith
 fatherFullName(789); // TypeError: Cannot read property 'father' of null
-
-// When father returns null
 fatherFullName(456); // TypeError: Cannot destructure property `firstName` of 'undefined' or 'null'.
 ```
 To achieve purity we need to handle these null values without uncaught errors.
 
 In effect, we need the following:
 ```javascript
+const pipe = require('lodash/fp/pipe');
+
 const fatherFullName = pipe(
    userFromId,
    value => {
@@ -73,16 +73,24 @@ const fatherFullName = pipe(
      return fullName(value);
    }
 );
+
+fatherFullName(123); // Fred Smith
+fatherFullName(789); // null
+fatherFullName(456); // null
 ```
 But achieving purity in this way exposes repetitive null checking details
 that distract from the main positive focus of our function.
 Using comp-check, we can achieve the same result without all the mess:
 ```javascript
+const { always, map, maybe } = require('comp-check');
+const pipe = require('lodash/fp/pipe');
+const identity = require('lodash/fp/identity');
+
 const fatherFullName = pipe(
-  maybe, // wraps argument into a container called a "Maybe"
-  map(userFromId), // applies userFromId to wrapped value if not null and wraps it into a new Maybe
-  map(father), // does the same thing, but with father
-  map(fullName), // does the same thing, but with fullname
-  always(value => value) // unwraps the value and returns it
+  maybe,
+  map(userFromId),
+  map(father),
+  map(fullName),
+  always(identity)
 );
 ```
