@@ -87,10 +87,10 @@ const pipe = require('lodash/fp/pipe');
 const identity = require('lodash/fp/identity');
 
 const fatherFullName = pipe(
-  maybe,
-  map(userFromId),
-  map(father),
-  map(fullName),
-  always(identity)
+  maybe, // wraps our argument in a new object called a "Maybe"
+  map(userFromId), // applies userFromId to our argument if not null
+  map(father), // applies father to the result if not null
+  map(fullName),  // does the same but with fullName
+  always(identity) // returns our final result,  null or not
 );
 ```
