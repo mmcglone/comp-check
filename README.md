@@ -81,8 +81,8 @@ Using comp-check, we can achieve the same result without all the mess:
 const fatherFullName = pipe(
   maybe, // wraps argument into a container called a "Maybe"
   map(userFromId), // applies userFromId to wrapped value if not null and wraps it into a new Maybe
-  map(father), // does the same thing but with father
-  map(fullName), // does the same thing but with fullname
-  always(value => value) // unwraps the value an returns it
+  map(father), // does the same thing, but with father
+  map(fullName), // does the same thing, but with fullname
+  always(value => value) // unwraps the value and returns it
 );
 ```
