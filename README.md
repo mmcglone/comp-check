@@ -27,14 +27,16 @@ and the following functions:
 ```javascript
 const userFromId = id => usersById[id] ? usersById[id] : null;
 
-const father = user => userFromId(user.father);
+const father = user => {
+  const { father } = user;
+  return father === undefined ? null : userFromId(father);
+};
 
 const fullName = user => {
   const { firstName, lastName } = user;
-  if (firstName === undefined || lastName === undefined) {
-    return null
-  }
-  return `${firstName} ${lastName}`;
+  return firstName === undefined || lastName === undefined
+    ? null
+    : `${firstName} ${lastName}`;
 };
 ```
 And suppose we want to compose these functions into a *pure* function that returns
