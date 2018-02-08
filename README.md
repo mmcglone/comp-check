@@ -37,9 +37,10 @@ const fullName = user => {
   return `${firstName} ${lastName}`;
 };
 ```
-And suppose we want to compose these functions into a pure function that returns
+And suppose we want to compose these functions into a *pure* function that returns
 the full name of a user's father given the user's id.
-The following won't work, because we'd end up with an impure function:
+
+The following won't work, because it's impure:
 ```javascript
 const pipe = require('lodash/fp/pipe');
 
@@ -49,8 +50,8 @@ const fatherFullName = pipe(
   fullName
 );
 ```
-Our function is impure because it throws errors that it doesn't catch,
-when `userFromId` or `father` return null:
+It's impure because it throws errors that it doesn't catch, for example,
+when `userFromId` or `father` returns null:
 ```javascript
 fatherFullName(123); // Fred Smith
 fatherFullName(789); // TypeError: Cannot read property 'father' of null
@@ -58,7 +59,7 @@ fatherFullName(456); // TypeError: Cannot destructure property `firstName` of 'u
 ```
 To achieve purity we need to handle these null values without uncaught errors.
 
-In effect, we need the following:
+In effect, we need something along the following lines:
 ```javascript
 const pipe = require('lodash/fp/pipe');
 
