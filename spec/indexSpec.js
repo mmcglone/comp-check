@@ -21,7 +21,7 @@ describe('The main module', () => {
     it('Maybe as its Maybe property', () => {
       expect(main.Maybe).toBe(Maybe);
     });
-    it('Maybe.of as its either method', () => {
+    it('Maybe.of as its maybe method', () => {
       expect(main.maybe).toBe(Maybe.of);
     });
   });
